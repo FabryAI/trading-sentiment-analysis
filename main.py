@@ -12,7 +12,7 @@ import pandas as pd
 from collections import Counter
 
 # 🔧 1. Select category
-SELECTED_CATEGORY = NewsCategory.CRYPTO # Change to .GENERAL or .STOCKS or .CRYPTO as needed
+SELECTED_CATEGORY = NewsCategory.GENERAL # Change to .GENERAL or .STOCKS or .CRYPTO as needed
 
 # 🔧 2. Setup output path with daily subfolder
 category_name = SELECTED_CATEGORY.name.lower()
