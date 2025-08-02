@@ -19,7 +19,7 @@ category_name = SELECTED_CATEGORY.name.lower()
 today_str = datetime.now().strftime("%Y-%m-%d")
 timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
-daily_dir = os.path.join("src", "outputs", today_str)
+daily_dir = os.path.join("outputs", today_str)
 os.makedirs(daily_dir, exist_ok=True)
 
 filename = f"{category_name}_sentiment_{timestamp}.png"
