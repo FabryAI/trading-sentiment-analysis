@@ -1,7 +1,6 @@
 from src.data_loader import load_raw_news
 from src.preprocessing import preprocess_dataframe
-from src.fetch_news import fetch_yahoo_news
-from src.categories import NewsCategory
+from src.fetch_news import fetch_news, NewsCategory
 from src.model import train_logistic_model, predict_sentiment
 from datetime import datetime
 
@@ -12,7 +11,7 @@ import pandas as pd
 from collections import Counter
 
 # 🔧 1. Select category
-SELECTED_CATEGORY = NewsCategory.CRYPTO  # Change to .GENERAL or .STOCKS as needed
+SELECTED_CATEGORY = NewsCategory.STOCKS # Change to .GENERAL or .STOCKS or .CRYPTO as needed
 
 # 🔧 2. Setup output path
 output_dir = "src/outputs"
@@ -37,10 +36,12 @@ if __name__ == "__main__":
     model, vectorizer = train_logistic_model(df)
 
     # 5. Fetch live news
-    print("\n🔎 Real-time Yahoo Finance News:")
-    news_titles = fetch_yahoo_news(limit=50, category=SELECTED_CATEGORY)
-    for title in news_titles:
-        print("-", title)
+    print(f"\n🔎 Real-time News Feed ({SELECTED_CATEGORY.name}):")
+    news_titles = fetch_news(limit=50, category=SELECTED_CATEGORY)
+
+    if not news_titles:
+        print("❌ Exiting: No news to analyze.")
+        exit()
 
     # 6. Predict sentiment
     print("\n📊 Predicted Sentiment:")
@@ -71,7 +72,7 @@ if __name__ == "__main__":
 
     sns.set(style="whitegrid")
     plt.figure(figsize=(6, 4))
-    ax = sns.barplot(
+    sns.barplot(
         x="Sentiment", y="Count", data=df_plot,
         palette={"positive": "green", "neutral": "gray", "negative": "red"}
     )
@@ -81,7 +82,9 @@ if __name__ == "__main__":
     plt.xlabel("Sentiment")
     plt.tight_layout()
 
-    # ✅ Show first, then save
-    plt.show()
+    # ✅ Save before show
     plt.savefig(output_path)
+    plt.show()
+
     print(f"\n📁 Sentiment barplot saved to: {output_path}")
+

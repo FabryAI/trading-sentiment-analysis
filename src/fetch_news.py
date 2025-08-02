@@ -1,20 +1,21 @@
 import feedparser
+from enum import Enum
 from typing import List
 
-import requests
-from bs4 import BeautifulSoup
-from src.categories import NewsCategory
 
-def fetch_yahoo_news(limit=5, category=NewsCategory.GENERAL):
-    url = f"https://finance.yahoo.com/{category.value}/"
-    headers = {"User-Agent": "Mozilla/5.0"}
+class NewsCategory(Enum):
+    GENERAL = "https://rss.nytimes.com/services/xml/rss/nyt/Business.xml"
+    STOCKS = "https://www.investing.com/rss/news_25.rss"
+    CRYPTO = "https://cointelegraph.com/rss"
 
-    response = requests.get(url, headers=headers)
-    soup = BeautifulSoup(response.text, "html.parser")
 
-    headlines = [
-        a.text.strip()
-        for a in soup.select("h3 a") if a.text.strip()
-    ]
-    return headlines[:limit]
+def fetch_news(limit=10, category: NewsCategory = NewsCategory.GENERAL) -> List[str]:
+    feed_url = category.value
+    feed = feedparser.parse(feed_url)
 
+    headlines = [entry.title.strip() for entry in feed.entries[:limit]]
+
+    if not headlines:
+        print("⚠️ No headlines fetched. Check the RSS URL or internet connection.")
+
+    return headlines
