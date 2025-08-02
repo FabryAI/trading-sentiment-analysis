@@ -6,21 +6,27 @@ from datetime import datetime
 
 import os
 import seaborn as sns
+from datetime import datetime
 import matplotlib.pyplot as plt
 import pandas as pd
 from collections import Counter
 
 # 🔧 1. Select category
-SELECTED_CATEGORY = NewsCategory.STOCKS # Change to .GENERAL or .STOCKS or .CRYPTO as needed
+SELECTED_CATEGORY = NewsCategory.CRYPTO # Change to .GENERAL or .STOCKS or .CRYPTO as needed
 
-# 🔧 2. Setup output path
-output_dir = "src/outputs"
-os.makedirs(output_dir, exist_ok=True)
-
-timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+# 🔧 2. Setup output path with daily subfolder
 category_name = SELECTED_CATEGORY.name.lower()
+today_str = datetime.now().strftime("%Y-%m-%d")
+timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
+daily_dir = os.path.join("src", "outputs", today_str)
+os.makedirs(daily_dir, exist_ok=True)
+
 filename = f"{category_name}_sentiment_{timestamp}.png"
-output_path = os.path.join(output_dir, filename)
+output_path = os.path.join(daily_dir, filename)
+
+print(f"\n📁 Saving sentiment chart to folder: {daily_dir}")
+
 
 if __name__ == "__main__":
     # 3. Load and preprocess historical dataset
